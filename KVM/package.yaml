@@ -1,0 +1,30 @@
+descriptor-schema-version: "2.3"
+
+info:
+  name: "Cisco IOx KVM Application based on CentOS 7 VM"
+  description: "KVM  Application"
+  version: "1.0"
+  author-link: "http://www.cisco.com"
+  author-name: "Cisco Systems"
+
+app:
+  # Indicate app type (vm, paas, lxc etc.,)
+  type: vm
+  cpuarch: "x86_64"
+  resources:
+    profile: custom
+    cpu: 5000
+    memory: 1024
+    disk: 5
+    vcpu: 2
+
+    network:
+      -
+        interface-name: eth0
+
+  # Specify runtime and startup
+  startup:
+    disks:
+       -
+        target-dev: "hdc"
+        file: “CentOS7-iox.qcow2"
