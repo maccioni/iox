@@ -34,12 +34,16 @@ CMD python3 /main.py
 # Build the Docker image
 
 ```
-$ sudo docker build -t iox-cat9k-test .
-Sending build context to Docker daemon  14.71MB
+fabri@ubuntu-148# sudo docker build -t iox-bottle .
+Sending build context to Docker daemon  12.29kB
 Step 1/6 : FROM alpine:3.5
+3.5: Pulling from library/alpine
+550fe1bea624: Pull complete
+Digest: sha256:9148d069e50eee519ec45e5683e56a1c217b61a52ed90eb77bdce674cc212f1e
+Status: Downloaded newer image for alpine:3.5
  ---> 6c6084ed97e5
 Step 2/6 : RUN apk add --update     python3
- ---> Running in bbf4a5eb4665
+ ---> Running in 06f31d654539
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.5/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.5/community/x86_64/APKINDEX.tar.gz
 (1/11) Installing libbz2 (1.0.6-r5)
@@ -55,10 +59,10 @@ fetch http://dl-cdn.alpinelinux.org/alpine/v3.5/community/x86_64/APKINDEX.tar.gz
 (11/11) Installing python3 (3.5.2-r10)
 Executing busybox-1.25.1-r1.trigger
 OK: 69 MiB in 22 packages
-Removing intermediate container bbf4a5eb4665
- ---> 4055557778d1
+Removing intermediate container 06f31d654539
+ ---> 7ac05c474d1e
 Step 3/6 : RUN pip3 install bottle
- ---> Running in f7feade2a79a
+ ---> Running in feae9410288c
 Collecting bottle
   Downloading https://files.pythonhosted.org/packages/bd/99/04dc59ced52a8261ee0f965a8968717a255ea84a36013e527944dbf3468c/bottle-0.12.13.tar.gz (70kB)
 Installing collected packages: bottle
@@ -67,82 +71,80 @@ Installing collected packages: bottle
 Successfully installed bottle-0.12.13
 You are using pip version 8.1.1, however version 10.0.0 is available.
 You should consider upgrading via the 'pip install --upgrade pip' command.
-Removing intermediate container f7feade2a79a
- ---> 73e27e19ed06
+Removing intermediate container feae9410288c
+ ---> dfb99dd55aa5
 Step 4/6 : EXPOSE 8000
- ---> Running in cf96b4d90bd6
-Removing intermediate container cf96b4d90bd6
- ---> 6575aa69d82b
+ ---> Running in 7efa29b99d37
+Removing intermediate container 7efa29b99d37
+ ---> afecccf80610
 Step 5/6 : COPY main.py /main.py
- ---> d26cfa9719f4
+ ---> 8e77957caa6f
 Step 6/6 : CMD python3 /main.py
- ---> Running in ae2fcf22f315
-Removing intermediate container ae2fcf22f315
- ---> 42eba0c72563
-Successfully built 42eba0c72563
-Successfully tagged iox-cat9k-test:latest
+ ---> Running in f26894a22cbe
+Removing intermediate container f26894a22cbe
+ ---> 2c1f34feddf6
+Successfully built 2c1f34feddf6
+Successfully tagged iox-bottle:latest
 ```
 
 # Verify Docker image and size
 
 ```
-$  sudo docker images
-REPOSITORY                     TAG                 IMAGE ID            CREATED             SIZE
-iox-cat9k-test                 latest              42eba0c72563        10 seconds ago      60.2MB
-perfsonar-testpoint.v4.0.iox   latest              289d60bede09        3 weeks ago         959MB
-alpine                         3.5                 6c6084ed97e5        3 months ago        3.99MB
-hello-world                    latest              f2a91732366c        4 months ago        1.85kB
-perfsonar/testpoint            latest              6b69953878b7        5 months ago        959MB
-
+fabri@ubuntu-148# sudo docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+iox-bottle          latest              2c1f34feddf6        3 minutes ago       60.2MB
 ```
 
 # build the IoX package
 
 ```
-$ sudo ./ioxclient docker package -p ext2 -headroom 200 iox-cat9k-test .
+fabri@ubuntu-148# sudo ioxclient docker package --name iox-bottle.tar iox-bottle .
+Saving current configuration
 Currently active profile :  default
 Command Name:  docker-package
 Using the package descriptor file in the project dir
 Validating descriptor file package.yaml with package schema definitions
 Parsing descriptor file..
-Found schema version  2.2
-Loading schema file for version  2.2
+Found schema version  2.6
+Loading schema file for version  2.6
 Validating package descriptor file..
-File package.yaml is valid under schema version 2.2
-Generating IOx LXC package, type =  lxc
+File package.yaml is valid under schema version 2.6
+Generating IOx LXC package
 Docker image rootfs size in 1M blocks:  71
-Creating iox package with rootfs size in 1M blocks:  271
-Parsing Package Metadata file :  /home/user//.package.metadata
-Updated package metadata file :  /home/user//.package.metadata
+Creating iox package with rootfs size in 1M blocks:  85
+Updated package metadata file :  /root/iox/LXC/.package.metadata
 No rsa key and/or certificate files provided to sign the package
 Checking if package descriptor file is present..
 Skipping descriptor schema validation..
-Created Staging directory at :  /tmp/440058382
+Created Staging directory at :  /tmp/303597821
 Copying contents to staging directory
 Creating an inner envelope for application artifacts
-Generated  /tmp/440058382/artifacts.tar.gz
+Including  rootfs.img
+Generated  /tmp/303597821/artifacts.tar.gz
 Calculating SHA1 checksum for package contents..
-Parsing Package Metadata file :  /tmp/440058382/.package.metadata
-Updated package metadata file :  /tmp/440058382/.package.metadata
-Root Directory :  /tmp/440058382
-Output file:  /tmp/368740373
+Parsing Package Metadata file :  /tmp/303597821/.package.metadata
+Updated package metadata file :  /tmp/303597821/.package.metadata
+Root Directory :  /tmp/303597821
+Output file:  /tmp/324856888
 Path:  .package.metadata
-SHA1 : 0080bca7c1ab53f7479fe053f49c9391afccac53
+SHA1 : ac5ae7bae15fc5909fc949b0ade317868fe3f31c
 Path:  artifacts.tar.gz
-SHA1 : fa7a0347e046eab3dd768998fc9252b2c0dd5aef
+SHA1 : 96745dab8e4b150d010a744bdf71884699d2aee4
 Path:  package.yaml
-SHA1 : c8c57090526747f779b46beb78d457b8f6fbf3f5
+SHA1 : 980382157d6ef1af4912047a5bdeaf4c51d1f0cc
 Generated package manifest at  package.mf
 Generating IOx Package..
-Package docker image iox-cat9k-test at /home/user//package.tar
+Package docker image iox-bottle at /root/iox/LXC/iox-bottle.tar
 ```
 
 # Verify package created
 
 ```
-$ ls -l package.tar 
--rw-r--r-- 1 root root 5632 Apr 17 20:46 package.tar
+fabri@ubuntu-148# ls -l iox-bottle.tar
+-rw-r--r-- 1 root root 23177728 Apr 19 10:24 iox-bottle.tar
 ```
+Copy package to Cisco IOS XE device in an external storage (bootflash is not supported for App Hosting)
+
 # Configure app
 
 ```
