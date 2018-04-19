@@ -143,4 +143,28 @@ Package docker image iox-cat9k-test at /home/user//package.tar
 $ ls -l package.tar 
 -rw-r--r-- 1 root root 5632 Apr 17 20:46 package.tar
 ```
+# Configure app
 
+```
+Cat9k#conf
+Configuring from terminal, memory, or network [terminal]?
+Enter configuration commands, one per line.  End with CNTL/Z.
+Cat9k(config)#app-hosting appid bottle
+Cat9k(config-app-hosting)# vnic management guest-interface 0
+Cat9k(config-app-hosting)#end
+```
+
+# install, activate and start application
+
+```
+Cat9k#app-hosting install appid bottle package usbflash0:lxc-bottle.tar
+bottle installed successfully
+Current state is: DEPLOYED
+
+Cat9k#app-hosting activate appid bottle
+bottle activated successfully
+Current state is: ACTIVATED
+
+Cat9k#app-hosting start appid bottle
+% Error: Failed
+```

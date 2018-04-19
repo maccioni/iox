@@ -1,0 +1,32 @@
+descriptor-schema-version: "2.6"
+
+info:
+  name: DevNet IOx Docker
+  description: "DevNet IOx Docker Learning lab"
+  version: "1.0"
+  author-link: "http://www.cisco.com"
+  author-name: "Cisco Systems"
+
+app:
+  # Indicate app type (vm, paas, lxc etc.,)
+  cpuarch: "x86_64"
+  kernel-version: "4.4.51"
+  type: lxc
+
+  resources:
+    profile: custom
+    cpu: 500
+    memory: 512
+    disk: 10
+
+    network:
+      -
+        interface-name: eth0
+        ports:
+          tcp:
+            - 8000
+
+# Specify runtime and startup
+  startup:
+    rootfs: rootfs.img
+    target: start.sh
