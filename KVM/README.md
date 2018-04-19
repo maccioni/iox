@@ -21,16 +21,16 @@ These are all the steps needed to build the IoX package, load it to the device, 
 A serial port is need to gain access to the VM from IOS XE.
 
 To enable it on the CentOS VM:
-''' 
+```
 systemctl enable serial-getty@ttyS0.service
-'''
+```
  
 To start and test that it works use:
-'''
+```
 systemctl start getty@ttyS0.service
  
 systemctl status serial-getty@ttyS0.service
-'''
+```
 
 ## 2) build a qcow2 image
 
@@ -40,16 +40,16 @@ supported by KVM like qcow 2 using common tools like qemu-img.
 
 The first step is to extract all the files from the .ova tar file including the .vmdk file (virtual hard disk drives):
 
-'''
+```
 tar -xvf appliance.ova
 qemu-img convert -O qcow2 CentOS7-disk001.vmdk CentOS7-iox.qcow2
-'''
+```
 
 ## 3) create a package descriptor
 
 Create an IoX package descriptor file and name it package.yaml
 
-'''
+```
 descriptor-schema-version: "2.3"
 
 info:
@@ -81,35 +81,35 @@ app:
         target-dev: "hdc"
         file: “CentOS7-iox.qcow2"
 
-'''
+```
 
 ## 4) build the IoX package
 
 To build the IoX package you need to use the ioxclient, release 1.5.1 or
 later. You can download it here: [ioxclient](https://developer.cisco.com/docs/iox/#downloads)
 
-'''
-ioxclient package  --name centos7-iox .
-'''
+```
+Mac $ ioxclient package  --name centos7-iox .
+```
 
 A file named centos7-iox.tar should be created in the local directory
 
-'''
+```
 Mac $ ls -l centos7-iox.tar
 -rw-r--r--  1 fabrimac  staff  581339648 Apr 17 21:51 centos7-iox.tar
-'''
+```
 
 ## 5) copy the IoX package to the Cisco device
 
-'''
+```
 Mac $ scp centos7-iox.tar admin@172.26.249.151:
-'''
+```
 
 ## 6) enable IoX on the Cisco IOS XE device
 
 First of all you need to enable iox and wait untill all the services are up
 
-'''
+```
 Cat9k#conf t
 Enter configuration commands, one per line.  End with CNTL/Z.
 Cat9k(config)#iox
@@ -122,7 +122,7 @@ IOx service (CAF)    : Running
 IOx service (HA)     : Running
 IOx service (IOxman) : Running
 Libvirtd             : Running
-'''
+```
 
 ## 7) configure the App
 
@@ -132,13 +132,13 @@ In case of Data ports, you need to configure a VPG (Virtual Port Group)
 as well.
 
 Example of configuration with Management port only:
-'''
+```
 app-hosting appid centos7
  vnic management guest-interface 0 gateway 172.26.249.1 name-server 171.70.168.183
-'''
+```
 
 Example with a data port:
-'''
+```
 Cat9k#conf t
 Enter configuration commands, one per line.  End with CNTL/Z.
 Cat9k(config)# interface VirtualPortGroup1
@@ -146,13 +146,13 @@ Cat9k(config-if)# ip address 10.151.1.1 255.255.255.0
 Cat9k(config-if)# app-hosting appid centos7
 Cat9k(config-app-hosting)# vnic gateway1 virtualportgroup 1 guest-interface 1
 Cat9k(config-app-hosting)#end
-'''
+```
 
 ## 8) Install the App
 
 Now you need to install, activate and start the application.
  
-'''
+```
 Cat9k# app-hosting install appid centos7 package usbflash0:centos7-iox.tar
 centos installed successfully
 Current state is: DEPLOYED
@@ -164,11 +164,11 @@ Current state is: ACTIVATED
 Cat9k# app-hosting start  appid centos7
 centos7 started successfully
 Current state is: RUNNING
-'''
+```
 
 Verify the app status and details
 
-'''
+```
 Cat9k#show app-hosting detail appid centos7
 State                  : RUNNING
 Author                 : Cisco Systems
@@ -200,7 +200,7 @@ eth0:
 
 
 Cat9k#
-'''
+```
 
 ## 9) [optional] Connect to the VM and configure Networking
 
@@ -213,7 +213,7 @@ networking on a Centos 7 server.
 
 To connect to the VM from the IOS XE CLI:
 
-'''
+```
 Cat9k#app-hosting connect appid centos7 console
 Connected to appliance. Exit using ^c^c^c
 
@@ -224,18 +224,18 @@ localhost login: root
 Password:
 Last login: Wed Apr 18 12:23:26 from 10.24.80.161
 [root@localhost ~]#
-'''
+```
 
 Verify server ethernet interfaces 
 
-'''
+```
 [root@localhost ~]# ls /sys/class/net
 eth0  lo
-'''
+```
 
 edit the interface configuration file:
 
-'''
+```
 [root@localhost ~]# cat /etc/sysconfig/network-scripts/ifcfg-eth0
 TYPE=Ethernet
 BOOTPROTO=none
@@ -246,18 +246,18 @@ DNS1=171.70.168.183
 IPADDR=172.26.249.201
 PREFIX=24
 GATEWAY=172.26.249.1
-'''
+```
 
 Restart networking
-'''
+```
 [root@localhost ~]# systemctl restart network
-'''
+```
 
 ## 10) Verify VM is reachable from outside the device
 
 Verify from any machine with access to the device
 
-'''
+```
 Mac:~ $ ping 172.26.249.231
 PING 172.26.249.231 (172.26.249.231): 56 data bytes
 64 bytes from 172.26.249.231: icmp_seq=0 ttl=59 time=17.640 ms
@@ -272,7 +272,7 @@ Mac:~ $ ssh root@172.26.249.231
 root@172.26.249.231's password:
 Last login: Wed Apr 18 13:35:17 2018 from 10.24.80.161
 [root@localhost ~]#
-'''
+```
 
 If you are able to connect via SSH, congrats, you have built your own
 CentOS 7 VM for Cisco IOS XE devices!!!
