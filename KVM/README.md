@@ -8,11 +8,10 @@ Cisco IOS XE device like a Cisco Catalyt 9000
 These are the requirements:
 * A CentOS 7 server installed in a virtualization platform like
   Virtual Box
-* A Cisco device running IOS Xe 16.8.1 or later
-* Docker Community Edition (CE)
-* qemu-img converter
+* A Cisco device running IOS XE 16.8.1 or later
+* qemu-img to convert the vmdk file to qcow2 format
 * ioxclient to create an IoX package
-* A DHCP server or an IP address to make the VM reachable
+* A DHCP server or a static IP address for te VM tomake it reachable from outside the network device
 
 These are all the steps needed to build the IoX package, load it to the device, activate and start it.
 
@@ -22,14 +21,14 @@ A serial port is need to gain access to the VM from IOS XE.
 
 To enable it on the CentOS VM:
 ```
-systemctl enable serial-getty@ttyS0.service
+$ systemctl enable serial-getty@ttyS0.service
 ```
  
 To start and test that it works use:
 ```
-systemctl start getty@ttyS0.service
+$ systemctl start getty@ttyS0.service
  
-systemctl status serial-getty@ttyS0.service
+$ systemctl status serial-getty@ttyS0.service
 ```
 
 ## 2) build a qcow2 image
@@ -38,11 +37,17 @@ To build an IoX VM based on an existing VM running on a virtualization
 platform like Virtual Box you need to convert the VM in a format
 supported by KVM like qcow 2 using common tools like qemu-img.
 
-The first step is to extract all the files from the .ova tar file including the .vmdk file (virtual hard disk drives):
+The first step is to identify the vmdk file (virtual hard disk drives) with the VM disk file.
+You might need to extract it from the .ova tar file:
+including the .vmdk file (virtual hard disk drives)
 
 ```
-tar -xvf appliance.ova
-qemu-img convert -O qcow2 CentOS7-disk001.vmdk CentOS7-iox.qcow2
+$ tar -xvf CentOS7.ova
+```
+Now using the qemu-img utiliy we can convert the vmdk file to qcow2 format using the syntax below:
+
+```
+$ qemu-img convert -O qcow2 CentOS7-disk001.vmdk CentOS7-iox.qcow2
 ```
 
 ## 3) create a package descriptor
@@ -89,13 +94,13 @@ To build the IoX package you need to use the ioxclient, release 1.5.1 or
 later. You can download it here: [ioxclient](https://developer.cisco.com/docs/iox/#downloads)
 
 ```
-Mac $ ioxclient package  --name centos7-iox .
+$ ioxclient package  --name centos7-iox .
 ```
 
 A file named centos7-iox.tar should be created in the local directory
 
 ```
-Mac $ ls -l centos7-iox.tar
+$ ls -l centos7-iox.tar
 -rw-r--r--  1 fabrimac  staff  581339648 Apr 17 21:51 centos7-iox.tar
 ```
 
