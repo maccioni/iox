@@ -27,4 +27,4 @@ app:
     disks:
        -
         target-dev: "hdc"
-        file: “CentOS7.qcow2"
+        file: “centos7.qcow2"
