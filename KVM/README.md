@@ -10,10 +10,10 @@ These are the requirements:
   Virtual Box
 * A Cisco device running IOS XE 16.8.1 or later
 * qemu-img to convert the vmdk file to qcow2 format
-* ioxclient to create an IoX package
+* ioxclient to create an IOx package
 * A DHCP server or a static IP address for te VM tomake it reachable from outside the network device
 
-These are all the steps needed to build the IoX package, load it to the device, activate and start it.
+These are all the steps needed to build the IOx package, load it to the device, activate and start it.
 
 ## 1) enable serial port on the CentOS VM
 
@@ -28,18 +28,15 @@ To start and test that it works use:
 ```
 $ systemctl start getty@ttyS0.service
  
-$ systemctl status serial-getty@ttyS0.service
+$ systemctl status getty@ttyS0.service
 ```
 
 ## 2) build a qcow2 image
 
-To build an IoX VM based on an existing VM running on a virtualization
-platform like Virtual Box you need to convert the VM in a format
-supported by KVM like qcow 2 using common tools like qemu-img.
+To build an IOx VM based on an existing VM running on a virtualization platform like Virtual Box you need to convert the VM in a format supported by KVM like qcow2 using common tools like qemu-img.
 
 The first step is to identify the vmdk file (virtual hard disk drives) with the VM disk file.
-You might need to extract it from the .ova tar file:
-including the .vmdk file (virtual hard disk drives)
+You might need to extract it from the .ova tar file
 
 ```
 $ tar -xvf CentOS7.ova
@@ -47,12 +44,12 @@ $ tar -xvf CentOS7.ova
 Now using the qemu-img utiliy we can convert the vmdk file to qcow2 format using the syntax below:
 
 ```
-$ qemu-img convert -O qcow2 CentOS7-disk001.vmdk CentOS7-iox.qcow2
+$ qemu-img convert -O qcow2 centos7.vmdk centos7.qcow2
 ```
 
 ## 3) create a package descriptor
 
-Create an IoX package descriptor file and name it package.yaml
+Create an I0x package descriptor file and name it package.yaml
 
 ```
 descriptor-schema-version: "2.3"
@@ -84,35 +81,35 @@ app:
     disks:
        -
         target-dev: "hdc"
-        file: “CentOS7-iox.qcow2"
+        file: “centos7.qcow2"
 
 ```
 
-## 4) build the IoX package
+## 4) build the IOx package
 
-To build the IoX package you need to use the ioxclient, release 1.5.1 or
-later. You can download it here: [ioxclient](https://developer.cisco.com/docs/iox/#downloads)
-
-```
-$ ioxclient package  --name centos7-iox .
-```
-
-A file named centos7-iox.tar should be created in the local directory
+To build the IOx package you need to use the ioxclient, release 1.5.1 or later.
+You can download it here: [ioxclient](https://developer.cisco.com/docs/iox/#downloads)
 
 ```
-$ ls -l centos7-iox.tar
--rw-r--r--  1 fabrimac  staff  581339648 Apr 17 21:51 centos7-iox.tar
+$ ioxclient package --name centos7 .
 ```
 
-## 5) copy the IoX package to the Cisco device
+A file named centos7.tar should be created in the local directory
 
 ```
-Mac $ scp centos7-iox.tar admin@172.26.249.151:
+$ ls -l centos7.tar
+-rw-r--r--  1 fabrimac  staff  581339648 Apr 17 21:51 centos7.tar
 ```
 
-## 6) enable IoX on the Cisco IOS XE device
+## 5) copy the IOx package to the Cisco device
 
-First of all you need to enable iox and wait untill all the services are up
+```
+Mac $ scp centos7.tar admin@10.10.249.151:
+```
+
+## 6) enable IOX on the Cisco IOS XE device
+
+First of all you need to enable iox and wait until all the services are up
 
 ```
 Cat9k#conf t
@@ -133,13 +130,12 @@ Libvirtd             : Running
 
 You need to configure at least one interface (vnic) per container.
 Both management port and up to 4 data ports are supported.
-In case of Data ports, you need to configure a VPG (Virtual Port Group)
-as well.
+In case of Data ports, you need to configure a VPG (Virtual Port Group) as well.
 
 Example of configuration with Management port only:
 ```
 app-hosting appid centos7
- vnic management guest-interface 0 gateway 172.26.249.1 name-server 171.70.168.183
+ vnic management guest-interface 0
 ```
 
 Example with a data port:
@@ -158,7 +154,7 @@ Cat9k(config-app-hosting)#end
 Now you need to install, activate and start the application.
  
 ```
-Cat9k# app-hosting install appid centos7 package usbflash0:centos7-iox.tar
+Cat9k# app-hosting install appid centos7 package usbflash0:centos7.tar
 centos installed successfully
 Current state is: DEPLOYED
 
@@ -171,7 +167,7 @@ centos7 started successfully
 Current state is: RUNNING
 ```
 
-Verify the app status and details
+## 9) Verify the app status and details
 
 ```
 Cat9k#show app-hosting detail appid centos7
@@ -201,20 +197,17 @@ Network interfaces
    ---------------------------------------
 eth0:
    MAC address         : 52:54:dd:9c:b3:05
-   IPv4 address        : 172.26.249.231
+   IPv4 address        : 10.10.249.231
 
 
 Cat9k#
 ```
 
-## 9) [optional] Connect to the VM and configure Networking
+## 10) [optional] Connect to the VM and configure Networking
 
-If you have a DHCP server in your network, the VM should automatically
-get an IP address as in the example shown above.
+If you have a DHCP server in your network, the VM should automatically get an IP address as in the example shown above.
 
-If you don't have a DHCP server or if you want to change the IP address,
-you can connect to the VM and follow the usual procedure to configure
-networking on a Centos 7 server.
+If you don't have a DHCP server or if you want to change the IP address, you can connect to the VM and follow the usual procedure to configure networking on a Centos 7 server.
 
 To connect to the VM from the IOS XE CLI:
 
@@ -248,9 +241,9 @@ NAME=eth0
 DEVICE=eth0
 ONBOOT=yes
 DNS1=171.70.168.183
-IPADDR=172.26.249.201
+IPADDR=10.10.249.201
 PREFIX=24
-GATEWAY=172.26.249.1
+GATEWAY=10.10.249.1
 ```
 
 Restart networking
@@ -263,18 +256,18 @@ Restart networking
 Verify from any machine with access to the device
 
 ```
-Mac:~ $ ping 172.26.249.231
-PING 172.26.249.231 (172.26.249.231): 56 data bytes
-64 bytes from 172.26.249.231: icmp_seq=0 ttl=59 time=17.640 ms
-64 bytes from 172.26.249.231: icmp_seq=1 ttl=59 time=13.931 ms
+Mac:~ $ ping 10.10.249.231
+PING 10.10.249.231 (10.10.249.231): 56 data bytes
+64 bytes from 10.10.249.231: icmp_seq=0 ttl=59 time=17.640 ms
+64 bytes from 10.10.249.231: icmp_seq=1 ttl=59 time=13.931 ms
 ^C
---- 172.26.249.231 ping statistics ---
+--- 10.10.249.231 ping statistics ---
 2 packets transmitted, 2 packets received, 0.0% packet loss
 round-trip min/avg/max/stddev = 13.931/15.785/17.640/1.855 ms
 Mac:~ $
 Mac:~ $
-Mac:~ $ ssh root@172.26.249.231
-root@172.26.249.231's password:
+Mac:~ $ ssh root@10.10.249.231
+root@10.10.249.231's password:
 Last login: Wed Apr 18 13:35:17 2018 from 10.24.80.161
 [root@localhost ~]#
 ```
