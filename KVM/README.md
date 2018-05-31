@@ -12,7 +12,11 @@ These are the Lab requirements:
   The build server used as a reference is an Ubuntu 16.04.4 LTS server
 * A Cisco Catalyst 9000 device running IOS XE 16.8.1 with a front panel USB
   stick of 16GB or bigger. If you don't have a Catalyst 9000 device, you can
-  leverage the DevNet Catalyst 9000 Sandbox.
+  leverage the DevNet Catalyst 9000 Sandbox. To reserve the sandbox:
+  1. go to https://devnetsandbox.cisco.com/
+  2. click on Networking on the right pane
+  3. select IOS XE on Catalyst 9000
+  4. click Reserve and follow the instructions.
 * A DHCP server or a static IP address for the VM
 
 ## Step 1: Build the CentOS7 VM
