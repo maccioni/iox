@@ -217,7 +217,7 @@ ls -l centos7.tar
 
 The CAF/IOx framework on IOS XE will provide several interfaces to manage
 the VM as described in the picture below:
-![alt text][https://github.com/maccioni/iox/blob/master/iox-management.png]
+![iox management](../iox-management.png?raw=true "IOX Mgmt")
 
 In 16.8.1 only the CLI interface is available and that is what we are going to
 use in this lab.
