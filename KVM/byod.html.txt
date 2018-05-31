@@ -1,0 +1,43 @@
+<h1 id="settingupadevelopmentworkstationforthislab">Setting Up a Development Workstation for this Lab</h1>
+
+<p>Before beginning this lab on your workstation, you'll want to install a standard set of development applications, tools, and interfaces.  To learn more about what tools and what they offer, you can explore the <a href="https://learninglabs.cisco.com/modules/dev-setup/dev-what/step/1">What is a Development Environment, and why do you need one?</a> Learning Lab.  </p>
+
+<p>To assist you with getting setup, DevNet has created Learning Labs that walk through the installation on different platforms.  </p>
+
+<ul>
+
+<li><a href="https://learninglabs.cisco.com/modules/dev-setup/dev-mac/step/1">Setting up your MacOS workstation as a development environment</a></li>
+
+<li><a href="https://learninglabs.cisco.com/modules/dev-setup/dev-centos/step/1">Setting up your Linux (CentOS) workstation as a development environment</a></li>
+</ul>
+
+<h1 id="settingupthelocalenvironment">Setting Up the Local Environment</h1>
+
+<p>Now that your workstation is ready to go, the next step is to install the lab specific requirements.  </p>
+
+<ol>
+
+<li><p>Download the ioxclient version 1.5.1 or later </p>
+
+<pre><code class="bash language-bash"> # Ubuntu and Mac
+  wget https://pubhub.devnetcloud.com/media/iox/docs/artifacts/ioxclient/ioxclient-v1.5.1.1/ioxclient_1.5.1.1_linux_amd64.tar.gz
+  tar xzf ioxclient_1.5.1.1_linux_amd64.tar.gz
+  cp ioxclient_1.5.1.1_linux_amd64/ioxclient /usr/local/bin/’
+</code></pre>
+</li>
+
+<li><p>Install qemu-utils to convert VM file system from vmdk to qcow2 format</p>
+
+<pre><code class="bash language-bash"># Ubuntu
+  apt-get install qemu-guest-agent
+  apt-get install qemu-utils
+</code></pre></li>
+
+<pre><code class="bash language-bash"># Mac
+  wget http://www.open.ou.nl/hsp/downloads3/Qemu212-64bit-OSX-24042018.zip
+  unzip Qemu212-64bit-OSX-24042018.zip
+  cp qemu-img /usr/local/bin/
+</code></pre></li>
+
+
+<p>Alright, you should be all set and ready to start the lab!  </p>
