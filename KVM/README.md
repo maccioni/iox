@@ -98,7 +98,7 @@ In order to be hosted on a Catalyst 9000 device the VM needs to be pre-packaged
 in the IOx format.
 An IOx package is a standard tar archive file that contains several files as
 shown in the picture below:
-![alt text][https://github.com/maccioni/iox/blob/master/iox-package.png]
+![iox characteristics](../iox-package.png?raw=true "IOX characteristics")
 
 * Storage: the VM (or LXC) File System
 * Network: the VM virtual interfaces list
